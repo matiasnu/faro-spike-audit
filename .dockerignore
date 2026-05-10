@@ -14,5 +14,3 @@ htmlcov
 node_modules
 playwright-report
 test-results
-README.md
-LICENSE
