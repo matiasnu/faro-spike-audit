@@ -1,0 +1,59 @@
+[project]
+name = "faro-spike-audit"
+version = "0.1.0"
+description = "FARO Spike 0 — proof of concept for WCAG 2.2 audit + AI remediation"
+authors = [
+    { name = "Matias Nuñez", email = "matnunez@frba.utn.edu.ar" },
+    { name = "Ignacio Villarruel", email = "ivillarruel@frba.utn.edu.ar" },
+]
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.6.0",
+    "playwright>=1.48.0",
+    "anthropic>=0.40.0",
+    "httpx>=0.27.0",
+    "python-dotenv>=1.0.1",
+    "structlog>=24.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.7.0",
+    "mypy>=1.13.0",
+    "httpx>=0.27.0",
+]
+
+[project.scripts]
+faro-spike = "faro_spike.main:run"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/faro_spike"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

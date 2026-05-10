@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sample page with intentional WCAG violations</title>
+    <!-- Missing lang attribute on <html> → 3.1.1 -->
+</head>
+<body>
+    <h1>FARO test fixture</h1>
+
+    <!-- 1.1.1 — image without alt -->
+    <img src="https://placehold.co/200" />
+
+    <!-- 1.4.3 — low contrast text -->
+    <p style="color: #BBBBBB; background-color: #FFFFFF;">
+        Este texto tiene contraste insuficiente.
+    </p>
+
+    <!-- 4.1.2 — button without accessible name -->
+    <button><svg width="16" height="16"><circle r="8" /></svg></button>
+
+    <!-- 3.3.2 — input without label -->
+    <input type="email" />
+</body>
+</html>
