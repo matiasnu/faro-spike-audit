@@ -7,7 +7,7 @@
 # fonts, etc.). Saves ~300 MB of layers vs building from python:slim and
 # running `playwright install-deps` ourselves.
 
-FROM mcr.microsoft.com/playwright/python:v1.48.0-jammy AS base
+FROM mcr.microsoft.com/playwright/python:v1.59.0-jammy AS base
 
 # Don't write .pyc files; force unbuffered stdout for clean container logs.
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -27,7 +27,9 @@ WORKDIR /app
 COPY pyproject.toml ./
 RUN uv venv /opt/venv && uv sync --no-install-project --no-dev
 
-# Layer 2: project source.
+# Layer 2: project source + README (hatchling reads README.md as package metadata
+# during the editable build, so it must live in the build context).
+COPY README.md ./
 COPY src/ ./src/
 COPY tests/ ./tests/
 RUN uv sync --no-dev

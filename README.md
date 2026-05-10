@@ -1,175 +1,278 @@
 # faro-spike-audit
 
-> **FARO Spike 0** — proof of concept for the WCAG 2.2 audit + AI remediation pipeline.
+> **FARO Spike 0** — proof of concept del motor de auditoría WCAG 2.2 + remediación.
 
-This repository validates the technical viability of FARO's core flow before
-committing to the full architecture in MVP Phase 1. It is intentionally
-minimal: no database, no auth, no GitHub integration. **Do not use in
-production.**
+Worker mínimo que recibe una URL, la renderiza con Chromium, corre axe-core
+sobre el DOM post-JavaScript, y devuelve las violaciones detectadas + los
+patches automáticos que el motor de cascada pudo generar.
 
-The goal is to answer two questions:
+**Pensado para validar la viabilidad técnica de FARO antes del MVP.** No es
+production-ready: sin auth, sin DB, sin GitHub App, sin multi-tenant.
 
-1. Can we reliably detect WCAG A + AA violations on a real-world public URL
-   using `Playwright + axe-core`?
-2. Can Claude generate code patches that a developer would accept on a Pull
-   Request review?
+---
 
-If both answers are *yes*, FARO becomes feasible. If not, we pivot before
-investing in the full stack.
-
-## Scope
-
-Two WCAG criteria covered for the spike:
-
-| Criterion | Rule | Strategy |
-| --- | --- | --- |
-| 1.1.1 Non-text Content | `image-alt` | Claude generates alt-text from page context |
-| 1.4.3 Contrast (Minimum) | `color-contrast` | Claude suggests new foreground hex |
-
-Out of scope for the spike: keyboard traps, ARIA, multi-page crawling,
-multimedia, GitHub PR creation, persistence.
-
-## Stack
-
-- **Python 3.12+**
-- **FastAPI** — HTTP layer
-- **Playwright** — headless Chromium to render JS-driven pages
-- **axe-core** (CDN-injected) — Deque's WCAG rule engine
-- **Anthropic Claude SDK** — patch generation
-- **structlog** — JSON logs
-
-## Quickstart
-
-### Option A — Docker (recommended for the team)
+## TL;DR para correrlo en 3 comandos
 
 ```bash
-# 1. Build and start. No .env or API key needed for the no-AI spike phase.
+git clone git@github.com:matiasnu/faro-spike-audit.git
+cd faro-spike-audit
 docker compose up --build
-
-# 2. From another terminal, hit the endpoint.
-curl -X POST http://localhost:8000/audit \
-    -H "Content-Type: application/json" \
-    -d '{"url": "https://www.example.com"}'
 ```
 
-The container ships Chromium and every system dependency Playwright needs.
-By default `ENABLE_AI_REMEDIATION=false`, so the worker runs end-to-end
-using only the deterministic + heuristic strategies. To enable the LLM
-tier later, copy `.env.example` to `.env`, set `ENABLE_AI_REMEDIATION=true`
-plus `ANTHROPIC_API_KEY=...`, and restart with `docker compose up`.
+Listo. Endpoints en `http://localhost:8000`. **No necesitás API key ni `.env`** —
+el spike corre por defecto con el motor determinístico + heurístico, sin gastar
+un solo token.
 
-### Option B — Local Python (for development with hot reload)
+---
+
+## Requisitos
+
+Solo uno: **Docker** con Compose v2.
+
+| SO | Cómo instalarlo |
+| :--- | :--- |
+| macOS / Windows | [Docker Desktop](https://www.docker.com/products/docker-desktop/) — incluye todo. |
+| macOS con Colima | `brew install colima docker docker-compose` y `colima start --cpu 4 --memory 6` |
+| Linux | `sudo apt install docker-ce docker-compose-plugin` (ver [docs.docker.com](https://docs.docker.com/engine/install/)) |
+
+**Verificá que el daemon esté corriendo** antes de seguir:
 
 ```bash
-# 1. Install uv (https://docs.astral.sh/uv/) if you don't have it.
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# 2. Install dependencies.
-uv sync --extra dev
-
-# 3. Install the Chromium binary Playwright will drive.
-uv run playwright install chromium
-
-# 4. (Optional) configure provider for AI remediation.
-cp .env.example .env
-# Leave ENABLE_AI_REMEDIATION=false for the spike, or set it to true and add ANTHROPIC_API_KEY.
-
-# 5. Run the worker.
-uv run faro-spike
-
-# 6. Hit the endpoint.
-curl -X POST http://localhost:8000/audit \
-    -H "Content-Type: application/json" \
-    -d '{"url": "https://www.example.com"}'
+docker ps
 ```
 
-## Remediation engine
+Si te tira `Cannot connect to the Docker daemon`, arrancá Docker Desktop o
+`colima start`.
 
-Patches are produced by a cascade of strategies in cost order:
+---
 
-1. **Deterministic** — pure algorithms (WCAG luminance for contrast,
-   `lang` injection, `tabindex` cleanup, target size CSS, focus outline).
-   Zero tokens, microsecond runtime, high confidence.
-2. **Heuristic** — DOM context analysis (derive `alt` from `title`/
-   `aria-label`, derive `aria-label` from `placeholder`/`name`).
-   Still zero tokens, medium confidence.
-3. **AI** (only when `ENABLE_AI_REMEDIATION=true`) — `LLMProvider`
-   abstraction (Anthropic Claude by default; AWS Bedrock / OpenAI
-   pluggable). Used as last resort for criteria where pure code
-   cannot infer the right answer.
+## Probar el endpoint
 
-The Remediator returns the first patch with confidence ≥ medium. If
-nothing applies, the violation is reported without a patch and the
-client is expected to open a manual Issue.
+### Health check
 
-## Project layout
+```bash
+curl http://localhost:8000/health
+# {"status":"ok","version":"0.1.0"}
+```
+
+### Auditar una URL
+
+```bash
+curl -s -X POST http://localhost:8000/audit \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://www.utn.edu.ar"}' | jq .
+```
+
+Respuesta abreviada:
+
+```json
+{
+  "url": "https://www.utn.edu.ar",
+  "duration_ms": 4321,
+  "violations": [
+    {
+      "rule_id": "color-contrast",
+      "wcag_criterion": "1.4.3",
+      "impact": "serious",
+      "nodes": [...]
+    }
+  ],
+  "patches": [
+    {
+      "violation_rule_id": "color-contrast",
+      "original_html": "<p style=\"color:#BBBBBB;...\">",
+      "patched_html":  "<p style=\"color:#767676;...\">",
+      "confidence": "high",
+      "explanation": "Foreground adjusted from #BBBBBB to #767676..."
+    }
+  ],
+  "coverage_summary": {"serious": 3, "moderate": 5, "minor": 2}
+}
+```
+
+### Swagger UI (más cómodo)
+
+Abrí en el browser: **http://localhost:8000/docs**
+
+Tenés un playground interactivo para tirar requests, ver el schema completo de
+`AuditRequest`/`AuditResponse` y compartirlo con los docentes en RD/RE.
+
+### Output más legible
+
+```bash
+curl -s -X POST http://localhost:8000/audit -H "Content-Type: application/json" \
+    -d '{"url":"https://www.utn.edu.ar"}' \
+  | jq '{
+      total_violations: (.violations | length),
+      total_patches:    (.patches | length),
+      duration_ms,
+      coverage_summary,
+      rules_detected:   [.violations[].rule_id] | unique,
+      patches_summary:  [.patches[] | {rule: .violation_rule_id, confidence}]
+    }'
+```
+
+---
+
+## Cómo funciona el motor de remediación
+
+Cada violación pasa por una **cascada** de strategies en orden de costo:
+
+| Tier | Costo | Cuándo aplica | Reglas que cubre |
+| :--- | :--- | :--- | :--- |
+| 1. Determinístico | Cero tokens, microsegundos | Algoritmos puros (ej. luminancia WCAG) | contraste, lang, tabindex, target size, focus visible |
+| 2. Heurístico | Cero tokens, milisegundos | El DOM ya tiene la respuesta cerca | alt-from-title, label-from-placeholder |
+| 3. IA (opcional) | Tokens de Anthropic / Bedrock | Necesita entender semántica | alt-text contextual, reescritura de links genéricos |
+
+El Remediator devuelve el **primer patch con confianza ≥ medium**. Si nada
+aplica, la violación queda en el reporte sin patch (modelo human-in-the-loop:
+el cliente la resuelve manualmente o se emite un Issue).
+
+**Por defecto el tier 3 está apagado** (`ENABLE_AI_REMEDIATION=false`). El spike
+demuestra la viabilidad sin gastar un token. Para activar IA más adelante:
+
+```bash
+cp .env.example .env
+# editar y poner:
+#   ENABLE_AI_REMEDIATION=true
+#   ANTHROPIC_API_KEY=sk-ant-...
+docker compose up
+```
+
+---
+
+## Comandos útiles
+
+```bash
+# Levantar en foreground (logs en consola)
+docker compose up
+
+# Rebuild forzando que no use el cache
+docker compose build --no-cache
+
+# Ver logs sin attach
+docker compose logs -f worker
+
+# Apagar y limpiar
+docker compose down
+
+# Limpiar todo (incluye imagen)
+docker compose down --rmi all
+```
+
+---
+
+## Troubleshooting
+
+**`Cannot connect to the Docker daemon`**
+Arrancá Docker Desktop o `colima start`. Verificá con `docker ps`.
+
+**`Readme file does not exist: README.md` durante el build**
+Asegurate de tener este archivo en el repo. El build de hatchling lo lee como
+metadata del paquete. Si lo ignoraste en `.dockerignore`, sacalo de ahí.
+
+**`BrowserType.launch: Executable doesn't exist at /ms-playwright/...`**
+Mismatch entre la versión del SDK Playwright (resuelto por `uv sync`) y el
+Chromium que vino con la imagen base. Actualizá la imagen del Dockerfile a
+la versión que pide el error y rebuildeá:
+```bash
+docker compose build --no-cache
+```
+
+**Apple Silicon (M1/M2/M3) — la imagen no carga**
+Forzar arquitectura amd64 en Colima:
+```bash
+colima stop && colima start --arch x86_64 --cpu 4 --memory 6
+```
+
+**El audit tarda > 30 segundos sobre sitios grandes**
+Subir el timeout en `docker-compose.yml`:
+```yaml
+environment:
+  PAGE_LOAD_TIMEOUT_MS: "60000"
+```
+
+**Probar sin Docker (modo dev local)**
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv sync --extra dev
+uv run playwright install chromium
+uv run faro-spike
+```
+
+---
+
+## Estructura del proyecto
 
 ```
 faro-spike-audit/
-├── README.md
-├── Dockerfile                 ← Playwright + Python image
-├── docker-compose.yml         ← One-command dev setup
-├── pyproject.toml
-├── .env.example
+├── README.md                  ← este archivo
+├── Dockerfile                 ← imagen Playwright + Python + uv
+├── docker-compose.yml         ← orquestación
+├── pyproject.toml             ← deps + scripts
+├── .env.example               ← variables (solo necesario para activar IA)
 ├── src/faro_spike/
-│   ├── main.py                ← FastAPI app, POST /audit
-│   ├── auditor.py             ← Playwright + axe-core injection
-│   ├── remediator.py          ← Cascade engine (no LLM logic here)
-│   ├── models.py              ← Pydantic models
-│   ├── llm/                   ← Pluggable LLM provider (only if AI enabled)
-│   │   ├── provider.py        ← LLMProvider Protocol
-│   │   ├── factory.py         ← build_provider() reads LLM_PROVIDER env
-│   │   └── anthropic_provider.py
-│   ├── strategies/            ← Cascade fix strategies
-│   │   ├── base.py            ← FixStrategy Protocol
-│   │   ├── registry.py        ← build_default_strategies()
-│   │   ├── deterministic/     ← contrast, lang, tabindex, target-size, focus
-│   │   ├── heuristic/         ← alt from attrs, label from placeholder
-│   │   └── ai/                ← LLMRemediationStrategy (lazy-loaded)
-│   └── prompts/
-│       ├── alt_text.py
-│       └── contrast.py
+│   ├── main.py                ← FastAPI: GET /health, POST /audit
+│   ├── auditor.py             ← Playwright + axe-core (CDN-injected)
+│   ├── remediator.py          ← orquestador de cascada
+│   ├── models.py              ← Pydantic v2: AuditRequest, Violation, Patch
+│   ├── strategies/            ← motor de cascada
+│   │   ├── deterministic/     ← contraste, lang, tabindex, target-size, focus
+│   │   ├── heuristic/         ← alt-from-attrs, label-from-placeholder
+│   │   ├── ai/                ← LLM (lazy, solo si ENABLE_AI_REMEDIATION=true)
+│   │   └── registry.py        ← build_default_strategies()
+│   ├── llm/                   ← provider pluggable (Anthropic, Bedrock, ...)
+│   └── prompts/               ← templates por criterio (alt_text, contrast)
 └── tests/
-    ├── test_auditor.py        ← unit + integration (Playwright gated)
-    ├── test_strategies.py     ← cascade engine + per-strategy tests
-    └── fixtures/sample_page.html
+    ├── test_auditor.py        ← unit tests + integración Playwright
+    ├── test_strategies.py     ← cascada end-to-end + por strategy
+    └── fixtures/sample_page.html  ← fixture con violaciones intencionales
 ```
+
+---
 
 ## Tests
 
 ```bash
-# Unit tests (no network, no browser).
-uv run pytest
+# Unit tests sin Chromium (rápidos)
+docker compose run --rm worker pytest tests/test_strategies.py -q
 
-# Integration test against the local HTML fixture (requires Chromium).
-FARO_RUN_INTEGRATION=1 uv run pytest -k integration
+# Integración con Chromium real (lento)
+docker compose run --rm -e FARO_RUN_INTEGRATION=1 worker pytest -q
 ```
 
-## Acceptance criteria for the spike
+---
 
-The spike is considered successful (Sprint 0 closed) when:
+## Acceptance criteria del spike
 
-1. The worker correctly identifies `image-alt` and `color-contrast`
-   violations on **at least 3 real-world Argentine sites** (an agency web,
-   a `.gob.ar` site, and a fintech) without crashing.
-2. Claude returns a syntactically valid HTML patch in **≥ 80%** of cases for
-   `image-alt` on a hand-curated corpus of 20 violations.
-3. End-to-end audit + remediation of 10 violations completes in **under 30
-   seconds** wall-clock time.
-4. Per-scan Anthropic API cost stays **under USD 0.30** for a typical page.
+El spike se considera exitoso (Sprint 0 cerrado) cuando:
 
-If any of these fails, the spike report identifies the root cause and the
-team decides whether to absorb it (slower MVP) or pivot the architecture.
+1. El worker detecta violaciones WCAG sin crashear sobre **3 sitios reales**
+   (un sitio universitario, un `.gob.ar` y una agencia web argentina).
+2. La cascada determinística + heurística genera patches con confianza
+   `high` o `medium` para al menos `1.4.3`, `3.1.1`, `2.4.3`, `2.5.8` y
+   `image-alt` cuando hay título disponible.
+3. El audit + remediation de hasta 10 violaciones termina en **< 30 segundos**
+   wall-clock sobre páginas de complejidad media.
+4. El motor corre **sin un solo token consumido** (modo default).
 
-## Context
+Si esos 4 puntos pasan, la viabilidad técnica de FARO queda demostrada antes
+de invertir en MVP completo, según lo declarado en el Estudio de Factibilidad
+y el Documento de Arquitectura del proyecto.
 
-FARO is the Final Project (Proyecto Final) for Ingeniería en Sistemas de
-Información — UTN FRBA, course 5504, group 4 (2026 cohort).
+---
 
-Team:
+## Equipo
 
-- Maiolo, Joaquín — Equipo Dinamita
-- **Nuñez, Matías Ezequiel** — Equipo Técnico (this repo's owner)
-- Ruival, Julián — Equipo Docu
-- Verger, Manuel — Equipo Docu
-- **Villarruel, Ignacio** — Equipo Técnico (this repo's owner)
+FARO — Proyecto Final UTN FRBA — Curso 5504 (K5052) — Grupo 4 — Cohorte 2026.
+
+| Legajo | Integrante | Rol |
+| :--- | :--- | :--- |
+| 172.848-9 | Maiolo, Joaquín | Equipo Dinamita (Acta + WBS + Gantt) |
+| **171.532-0** | **Nuñez, Matías Ezequiel** | **Equipo Técnico — owner de este repo** |
+| 175.637-0 | Ruival, Julián | Equipo Docu |
+| 220.979-2 | Verger, Manuel | Equipo Docu |
+| **176.100-6** | **Villarruel, Ignacio** | **Equipo Técnico — co-owner de este repo** |
+
+Profesores a cargo del proyecto: Balduzzi, Silvia · Ferrari Gallo, Valeria.
+Director de cátedra: Mag. Ing. Gabriela Salem.
