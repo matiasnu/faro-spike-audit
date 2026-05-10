@@ -1,0 +1,25 @@
+services:
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: faro-spike-audit:dev
+    container_name: faro-spike-worker
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: .env
+        required: false       # .env is optional during the no-AI spike phase
+    environment:
+      # Defaults that work without any .env file. Override in .env if needed.
+      LOG_LEVEL: INFO
+      ENABLE_AI_REMEDIATION: "false"
+      MAX_REMEDIATIONS: "10"
+      PAGE_LOAD_TIMEOUT_MS: "30000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health',timeout=3).status==200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

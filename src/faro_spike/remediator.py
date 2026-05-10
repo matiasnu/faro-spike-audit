@@ -1,155 +1,73 @@
-"""Generate code patches using a pluggable LLMProvider.
+"""Cascade remediation engine.
 
-The remediator does not know which model is behind the provider. It only
-calls `provider.complete(system, user_message)` and parses the response.
-Swapping Claude for AWS Bedrock or OpenAI requires zero changes here.
+Iterates over an ordered list of `FixStrategy` instances and returns the
+first patch with confidence >= medium. The chain is built externally
+(see `faro_spike.strategies.registry.build_default_strategies`) so the
+ordering is configurable per environment.
+
+Patches with confidence == "low" do not short-circuit: the next strategy
+in the chain is given a chance to produce something better. This is what
+implements the "deterministic first, AI last" guarantee.
 """
 
 from __future__ import annotations
 
-import json
 import logging
-from typing import Final
+from typing import Iterable
 
-from faro_spike.llm.provider import LLMCompletionError, LLMProvider
 from faro_spike.models import Patch, Violation
-from faro_spike.prompts import alt_text, contrast
+from faro_spike.strategies.base import FixStrategy
 
 logger = logging.getLogger(__name__)
 
-# Map axe-core rule IDs to the prompt module that handles them.
-SUPPORTED_RULES: Final[set[str]] = {"image-alt", "color-contrast"}
-
-DEFAULT_MAX_TOKENS = 1024
+_CONFIDENCE_RANK = {"low": 0, "medium": 1, "high": 2}
 
 
 class Remediator:
-    """Wraps an LLMProvider with the project-specific patching strategies.
+    """Apply a chain of fix strategies to one violation at a time."""
 
-    Construct with a concrete provider (typically built via
-    `faro_spike.llm.build_provider()`) so the rest of the worker stays
-    vendor-agnostic.
-    """
-
-    def __init__(
-        self,
-        *,
-        provider: LLMProvider,
-        max_tokens: int = DEFAULT_MAX_TOKENS,
-    ) -> None:
-        self._provider = provider
-        self._max_tokens = max_tokens
+    def __init__(self, *, strategies: Iterable[FixStrategy]) -> None:
+        self._strategies = list(strategies)
+        if not self._strategies:
+            raise ValueError("Remediator requires at least one strategy.")
 
     def remediate(self, violation: Violation) -> Patch | None:
-        """Generate a patch for one violation, or None if the rule is unsupported."""
-        if violation.rule_id not in SUPPORTED_RULES:
-            logger.debug("Skipping unsupported rule", extra={"rule_id": violation.rule_id})
-            return None
+        """Run the cascade. Returns the first acceptable patch, or None."""
+        best_patch: Patch | None = None
+        best_strategy: str | None = None
 
-        if not violation.nodes:
-            logger.warning(
-                "Violation has no nodes, cannot remediate",
+        for strategy in self._strategies:
+            if not strategy.can_handle(violation):
+                continue
+
+            patch = strategy.fix(violation)
+            if patch is None:
+                continue
+
+            if _CONFIDENCE_RANK[patch.confidence] >= _CONFIDENCE_RANK["medium"]:
+                logger.info(
+                    "patch_produced",
+                    extra={
+                        "rule_id": violation.rule_id,
+                        "strategy": strategy.name,
+                        "tier": strategy.cost_tier,
+                        "confidence": patch.confidence,
+                    },
+                )
+                return patch
+
+            # Low-confidence patch: keep it as fallback, try later strategies.
+            if best_patch is None:
+                best_patch, best_strategy = patch, strategy.name
+
+        if best_patch is not None:
+            logger.info(
+                "patch_produced_low_confidence",
+                extra={"rule_id": violation.rule_id, "strategy": best_strategy},
+            )
+        else:
+            logger.debug(
+                "no_strategy_handled_violation",
                 extra={"rule_id": violation.rule_id},
             )
-            return None
-
-        if violation.rule_id == "image-alt":
-            return self._remediate_alt_text(violation)
-        if violation.rule_id == "color-contrast":
-            return self._remediate_contrast(violation)
-
-        return None  # Defensive — unreachable given SUPPORTED_RULES.
-
-    # ------------------------------------------------------------------
-    # Per-rule remediation strategies
-    # ------------------------------------------------------------------
-
-    def _remediate_alt_text(self, violation: Violation) -> Patch:
-        primary_node = violation.nodes[0]
-        user_message = alt_text.build_prompt(violation)
-        patched_html = self._invoke(
-            system=alt_text.SYSTEM_PROMPT,
-            user_message=user_message,
-        ).strip()
-
-        return Patch(
-            violation_rule_id=violation.rule_id,
-            target_selector=primary_node.target[0] if primary_node.target else "unknown",
-            original_html=primary_node.html,
-            patched_html=patched_html,
-            explanation=(
-                f"Added a meaningful alt attribute generated by {self._provider.name} "
-                "from the page context. Review for accuracy before merging."
-            ),
-            confidence="medium",
-        )
-
-    def _remediate_contrast(self, violation: Violation) -> Patch:
-        primary_node = violation.nodes[0]
-        user_message = contrast.build_prompt(violation)
-        raw_response = self._invoke(
-            system=contrast.SYSTEM_PROMPT,
-            user_message=user_message,
-        )
-
-        try:
-            payload = json.loads(raw_response)
-            patched_color = payload["patched_color"]
-            explanation = payload["explanation"]
-        except (json.JSONDecodeError, KeyError) as exc:
-            logger.warning(
-                "Provider returned malformed contrast response, falling back",
-                extra={
-                    "provider": self._provider.name,
-                    "error": str(exc),
-                    "response": raw_response[:200],
-                },
-            )
-            patched_color = "#000000"
-            explanation = (
-                f"{self._provider.name} response could not be parsed; "
-                "defaulted to black. Manual review required."
-            )
-
-        return Patch(
-            violation_rule_id=violation.rule_id,
-            target_selector=primary_node.target[0] if primary_node.target else "unknown",
-            original_html=primary_node.html,
-            patched_html=self._inject_color(primary_node.html, patched_color),
-            explanation=explanation,
-            confidence="medium",
-        )
-
-    # ------------------------------------------------------------------
-    # Provider call wrapper
-    # ------------------------------------------------------------------
-
-    def _invoke(self, *, system: str, user_message: str) -> str:
-        """Delegate to the configured LLMProvider with consistent error context."""
-        try:
-            return self._provider.complete(
-                system=system,
-                user_message=user_message,
-                max_tokens=self._max_tokens,
-            )
-        except LLMCompletionError:
-            raise
-        except Exception as exc:  # noqa: BLE001
-            raise LLMCompletionError(
-                f"Provider {self._provider.name} raised unexpected error: {exc}"
-            ) from exc
-
-    # ------------------------------------------------------------------
-    # Helpers
-    # ------------------------------------------------------------------
-
-    @staticmethod
-    def _inject_color(html: str, color: str) -> str:
-        """Naive helper: append an inline style to override the foreground color.
-
-        Production will rewrite the actual CSS rule that owns the color, but
-        for the spike an inline style is enough to demonstrate the patch shape.
-        """
-        if 'style="' in html:
-            return html.replace('style="', f'style="color: {color}; ', 1)
-        return html.replace("<", f'<span style="color: {color}">', 1) + "</span>"
+        return best_patch
