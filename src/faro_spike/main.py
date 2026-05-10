@@ -23,6 +23,7 @@ from fastapi.responses import JSONResponse
 
 from faro_spike import __version__
 from faro_spike.auditor import AuditError, audit_url
+from faro_spike.llm import build_provider
 from faro_spike.models import AuditRequest, AuditResponse, Patch
 from faro_spike.remediator import Remediator
 
@@ -77,7 +78,8 @@ def audit(request: AuditRequest) -> AuditResponse:
 
     patches: list[Patch] = []
     if request.remediate and violations:
-        remediator = Remediator()
+        provider = build_provider()
+        remediator = Remediator(provider=provider)
         for violation in violations[:max_remediations]:
             patch = remediator.remediate(violation)
             if patch is not None:
