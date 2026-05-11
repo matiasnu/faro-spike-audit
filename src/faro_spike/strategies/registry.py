@@ -21,7 +21,9 @@ from faro_spike.strategies.deterministic import (
 )
 from faro_spike.strategies.heuristic import (
     AltFromAttrsStrategy,
+    ButtonNameFromImageStrategy,
     LabelFromPlaceholderStrategy,
+    LinkNameFromImageStrategy,
 )
 
 logger = logging.getLogger(__name__)
@@ -48,6 +50,8 @@ def build_default_strategies(*, enable_ai: bool | None = None) -> list[FixStrate
         FocusVisibleStrategy(),
         # Heuristic tier (no tokens, DOM context analysis).
         AltFromAttrsStrategy(),
+        ButtonNameFromImageStrategy(),
+        LinkNameFromImageStrategy(),
         LabelFromPlaceholderStrategy(),
     ]
 

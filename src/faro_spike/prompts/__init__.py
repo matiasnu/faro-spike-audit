@@ -1,11 +1,10 @@
 """Prompt templates for each WCAG rule that the spike auto-remediates.
 
-Each module exposes a `build_prompt(violation)` function that returns the
-text we send to Claude. Keeping prompts isolated by rule lets us iterate on
-them independently and run regression evals in the future.
+Each module exposes `SYSTEM_PROMPT` and a `build_prompt(violation)` function
+returning the user-side text to send to the LLM. Keeping prompts isolated by
+rule lets us iterate independently and run regression evals later.
 """
 
-from faro_spike.prompts.alt_text import build_prompt as build_alt_text_prompt
-from faro_spike.prompts.contrast import build_prompt as build_contrast_prompt
+from faro_spike.prompts import alt_text, button_name, contrast, link_name
 
-__all__ = ["build_alt_text_prompt", "build_contrast_prompt"]
+__all__ = ["alt_text", "button_name", "contrast", "link_name"]

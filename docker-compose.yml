@@ -7,18 +7,21 @@ services:
     container_name: faro-spike-worker
     ports:
       - "8000:8000"
+    # The .env file is OPTIONAL. When present, its values override the defaults
+    # baked into the Dockerfile (ENV ENABLE_AI_REMEDIATION=false, LOG_LEVEL=INFO,
+    # etc.). Do NOT define an `environment:` block here — explicit `environment`
+    # values in compose take precedence over `env_file`, which silently breaks
+    # `ENABLE_AI_REMEDIATION=true` in the user's .env.
     env_file:
       - path: .env
-        required: false       # .env is optional during the no-AI spike phase
-    environment:
-      # Defaults that work without any .env file. Override in .env if needed.
-      LOG_LEVEL: INFO
-      ENABLE_AI_REMEDIATION: "false"
-      MAX_REMEDIATIONS: "10"
-      PAGE_LOAD_TIMEOUT_MS: "30000"
+        required: false
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python3", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health',timeout=3).status==200 else 1)"]
+      test:
+        - "CMD"
+        - "python3"
+        - "-c"
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health',timeout=3).status==200 else 1)"
       interval: 30s
       timeout: 5s
       retries: 3

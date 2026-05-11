@@ -7,8 +7,19 @@ markup itself.
 """
 
 from faro_spike.strategies.heuristic.alt_from_attrs import AltFromAttrsStrategy
+from faro_spike.strategies.heuristic.button_name_from_image import (
+    ButtonNameFromImageStrategy,
+)
 from faro_spike.strategies.heuristic.label_from_placeholder import (
     LabelFromPlaceholderStrategy,
 )
+from faro_spike.strategies.heuristic.link_name_from_image import (
+    LinkNameFromImageStrategy,
+)
 
-__all__ = ["AltFromAttrsStrategy", "LabelFromPlaceholderStrategy"]
+__all__ = [
+    "AltFromAttrsStrategy",
+    "ButtonNameFromImageStrategy",
+    "LabelFromPlaceholderStrategy",
+    "LinkNameFromImageStrategy",
+]
