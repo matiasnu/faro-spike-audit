@@ -129,15 +129,24 @@ aplica, la violación queda en el reporte sin patch (modelo human-in-the-loop:
 el cliente la resuelve manualmente o se emite un Issue).
 
 **Por defecto el tier 3 está apagado** (`ENABLE_AI_REMEDIATION=false`). El spike
-demuestra la viabilidad sin gastar un token. Para activar IA más adelante:
+demuestra la viabilidad sin gastar un token. Para activarlo:
 
 ```bash
 cp .env.example .env
-# editar y poner:
+# Editar .env y poner:
 #   ENABLE_AI_REMEDIATION=true
-#   ANTHROPIC_API_KEY=sk-ant-...
+#   GROQ_API_KEY=gsk_...        ← gratis en https://console.groq.com/keys
 docker compose up
 ```
+
+**¿Por qué Groq por defecto?**
+
+- Free tier sin tarjeta de crédito (1000 req/día, sub-200 ms latencia)
+- **No entrena con tu código** (a diferencia del free tier de Anthropic y Gemini)
+- `llama-3.3-70b-versatile` saca 88,4% en HumanEval — al nivel de Claude Sonnet para generar HTML/CSS/ARIA
+
+Si preferís Claude (mejor para edge cases con visión y razonamiento profundo)
+y tenés API key, cambiá a `LLM_PROVIDER=anthropic` en el `.env`.
 
 ---
 
@@ -202,11 +211,18 @@ uv run faro-spike
 
 ---
 
+## Documentación técnica
+
+- [`docs/architecture/motor_flow.md`](docs/architecture/motor_flow.md) —
+  diagramas Mermaid del flujo end-to-end, la cascada del Remediator, y
+  la anatomía de cada etapa. Se renderiza directo en GitHub.
+
 ## Estructura del proyecto
 
 ```
 faro-spike-audit/
 ├── README.md                  ← este archivo
+├── docs/architecture/         ← diagramas Mermaid del motor
 ├── Dockerfile                 ← imagen Playwright + Python + uv
 ├── docker-compose.yml         ← orquestación
 ├── pyproject.toml             ← deps + scripts
