@@ -1,0 +1,292 @@
+<!-- FRONTEND-02 — INTENCIONALMENTE NO ACCESIBLE
+     Problemas en esta página:
+     [Motora severa]  dropdown de horario solo funciona con hover (no con teclado)
+     [Motora severa]  selector de fecha custom con solo mouse (sin input nativo)
+     [Visual total]   sin fieldset/legend para agrupar campos relacionados
+     [Visual total]   sin labels en inputs
+     [Cognitiva]      formulario multi-paso sin indicador de progreso
+     [Cognitiva]      timeout de 30s sin advertencia (implementado en main.js)
+     [Visual total]   sin lang
+     [Visual total]   sin landmarks
+     [Visual total]   sin aria-required, sin aria-invalid
+     [Daltonismo]     errores solo por color rojo
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inicio</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    /* Selector de hora custom — solo mouse, sin teclado */
+    .time-picker {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .time-picker-trigger {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #ddd;
+      border-radius: 2px;
+      font-size: 13px;
+      color: #aaa;
+      background: #fafafa;
+      cursor: pointer;
+      text-align: left;
+      /* Sin tabindex, sin role, sin aria — invisible para teclado y screen reader */
+    }
+
+    .time-picker-options {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      border: 1px solid #ddd;
+      z-index: 10;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    /* Solo se abre con hover, no con foco ni teclado */
+    .time-picker:hover .time-picker-options {
+      display: block;
+    }
+
+    .time-picker-options div {
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #999;
+      cursor: pointer;
+    }
+
+    .time-picker-options div:hover {
+      background: #f5f5f5;
+    }
+
+    /* Pasos del formulario — sin indicador visual de progreso */
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .step-nav {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .step-nav button {
+      padding: 4px 12px;
+      font-size: 12px;
+      border: 1px solid #ccc;
+      background: #ebebeb;
+      color: #aaa;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    /* Selector de fecha custom (solo click, no keyboard) */
+    .fake-calendar {
+      border: 1px solid #ddd;
+      padding: 10px;
+      display: inline-block;
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 10px;
+      width: 100%;
+    }
+
+    .fake-calendar-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: #bbb;
+    }
+
+    .fake-calendar-header span {
+      cursor: pointer;
+    }
+
+    .fake-calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      text-align: center;
+    }
+
+    .fake-calendar-days div {
+      padding: 4px;
+      cursor: pointer;
+      border-radius: 2px;
+      /* Sin tabindex ni role=button — inaccesible con teclado */
+    }
+
+    .fake-calendar-days div:hover {
+      background: #f0f7fc;
+    }
+
+    .fake-calendar-days div.selected {
+      background: #7fb3d3;
+      color: #fff;
+    }
+
+    .fake-calendar-days div.header-day {
+      font-weight: bold;
+      color: #ccc;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="site-header">
+    <a href="../index.html" class="site-logo">El Sauce</a>
+    <div class="main-nav">
+      <ul>
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="about.html">Nosotros</a></li>
+        <li><a href="menu.html">Menú</a></li>
+        <li><a href="reservation.html">Reservas</a></li>
+        <li><a href="contact.html">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <h1>Reservá tu mesa</h1>
+
+    <!-- Sin indicador de paso actual, sin aria-label, sin progress -->
+    <div id="reservation-form" style="max-width: 500px; margin-top: 20px;">
+
+      <!-- Paso 1 — sin indicación de que es el paso 1 de N -->
+      <div class="step active" id="step-1">
+
+        <!-- Sin label, sin required, sin aria -->
+        <input type="text" name="name" placeholder="Tu nombre" />
+        <input type="email" name="email" placeholder="Tu email" />
+        <input type="tel" name="phone" placeholder="Tu teléfono" />
+
+        <div class="step-nav">
+          <button type="button" onclick="showStep(2)">Siguiente</button>
+        </div>
+      </div>
+
+      <!-- Paso 2 — sin indicación de que es el paso 2 de N -->
+      <div class="step" id="step-2">
+
+        <!-- Calendario custom — solo mouse, sin acceso por teclado ni screen reader -->
+        <p style="font-size: 12px; color: #bbb; margin-bottom: 6px;">Seleccioná una fecha:</p>
+        <div class="fake-calendar" role="presentation" aria-hidden="true">
+          <div class="fake-calendar-header">
+            <span onclick="prevMonth()">◀</span>
+            <span id="cal-month">Mayo 2026</span>
+            <span onclick="nextMonth()">▶</span>
+          </div>
+          <div class="fake-calendar-days" id="cal-days">
+            <div class="header-day">Lu</div>
+            <div class="header-day">Ma</div>
+            <div class="header-day">Mi</div>
+            <div class="header-day">Ju</div>
+            <div class="header-day">Vi</div>
+            <div class="header-day">Sa</div>
+            <div class="header-day">Do</div>
+            <div onclick="selectDay(this)">1</div><div onclick="selectDay(this)">2</div>
+            <div onclick="selectDay(this)">3</div><div onclick="selectDay(this)">4</div>
+            <div onclick="selectDay(this)">5</div><div onclick="selectDay(this)">6</div>
+            <div onclick="selectDay(this)">7</div><div onclick="selectDay(this)">8</div>
+            <div onclick="selectDay(this)">9</div><div onclick="selectDay(this)">10</div>
+            <div onclick="selectDay(this)">11</div><div onclick="selectDay(this)">12</div>
+            <div onclick="selectDay(this)">13</div><div onclick="selectDay(this)">14</div>
+            <div onclick="selectDay(this)">15</div><div onclick="selectDay(this)">16</div>
+            <div onclick="selectDay(this)">17</div><div onclick="selectDay(this)">18</div>
+            <div onclick="selectDay(this)">19</div><div onclick="selectDay(this)">20</div>
+            <div onclick="selectDay(this)">21</div><div onclick="selectDay(this)">22</div>
+            <div onclick="selectDay(this)">23</div><div onclick="selectDay(this)">24</div>
+            <div onclick="selectDay(this)">25</div><div onclick="selectDay(this)">26</div>
+            <div onclick="selectDay(this)">27</div><div onclick="selectDay(this)">28</div>
+            <div onclick="selectDay(this)">29</div><div onclick="selectDay(this)">30</div>
+            <div onclick="selectDay(this)">31</div>
+          </div>
+        </div>
+        <!-- Input oculto para el valor — el screen reader no puede acceder al calendario -->
+        <input type="hidden" name="date" id="selected-date" />
+
+        <!-- Dropdown de hora solo con hover — no funciona con Tab/Enter/flechas -->
+        <p style="font-size: 12px; color: #bbb; margin-bottom: 6px;">Horario (pasá el mouse para ver opciones):</p>
+        <div class="time-picker">
+          <div class="time-picker-trigger" id="time-display">Seleccioná un horario</div>
+          <div class="time-picker-options" id="time-options">
+            <div onclick="selectTime('12:00')">12:00 — Almuerzo</div>
+            <div onclick="selectTime('12:30')">12:30 — Almuerzo</div>
+            <div onclick="selectTime('13:00')">13:00 — Almuerzo</div>
+            <div onclick="selectTime('13:30')">13:30 — Almuerzo</div>
+            <div onclick="selectTime('20:00')">20:00 — Cena</div>
+            <div onclick="selectTime('20:30')">20:30 — Cena</div>
+            <div onclick="selectTime('21:00')">21:00 — Cena</div>
+            <div onclick="selectTime('21:30')">21:30 — Cena</div>
+          </div>
+        </div>
+        <input type="hidden" name="time" id="selected-time" />
+
+        <input type="number" name="guests" placeholder="Personas" style="margin-bottom:10px;" />
+
+        <div class="step-nav">
+          <button type="button" onclick="showStep(1)">Atrás</button>
+          <button type="button" onclick="showStep(3)">Siguiente</button>
+        </div>
+      </div>
+
+      <!-- Paso 3 -->
+      <div class="step" id="step-3">
+        <textarea name="dietary" rows="3" placeholder="Restricciones alimentarias (opcional)"></textarea>
+
+        <div class="step-nav">
+          <button type="button" onclick="showStep(2)">Atrás</button>
+          <button type="button" onclick="submitReservation()">Confirmar reserva</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="site-footer">
+    <p>© 2024 El Sauce · <a href="contact.html">Contacto</a></p>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script>
+    function showStep(n) {
+      document.querySelectorAll('.step').forEach((s) => s.classList.remove('active'));
+      document.getElementById('step-' + n).classList.add('active');
+      // No actualiza aria-live, no mueve el foco, no anuncia el cambio de paso
+    }
+
+    function selectDay(el) {
+      document.querySelectorAll('.fake-calendar-days div').forEach((d) => d.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('selected-date').value = el.textContent;
+      // Cambio de estado no anunciado a screen reader
+    }
+
+    function selectTime(t) {
+      document.getElementById('time-display').textContent = t;
+      document.getElementById('selected-time').value = t;
+      // No anuncia el valor seleccionado
+    }
+
+    function prevMonth() { /* sin implementación */ }
+    function nextMonth() { /* sin implementación */ }
+
+    function submitReservation() {
+      alert('Reserva enviada.');
+      // Sin feedback accesible, sin focus management, sin aria-live
+    }
+  </script>
+</body>
+</html>

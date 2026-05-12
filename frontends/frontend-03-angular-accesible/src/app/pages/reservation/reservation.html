@@ -1,0 +1,117 @@
+<nav class="breadcrumb" aria-label="Ruta de navegación">
+  <ol>
+    <li><a routerLink="/">Inicio</a></li>
+    <li><span aria-current="page">Reservas</span></li>
+  </ol>
+</nav>
+
+<h1>Reservá tu mesa</h1>
+
+@if (submitted()) {
+  <div class="alert alert-success" role="status" aria-live="polite" tabindex="-1">
+    ¡Reserva confirmada! Te contactaremos dentro de las 2 horas.
+  </div>
+}
+
+@if (!submitted()) {
+  <p style="margin:.75rem 0 2rem;">Los campos con <abbr title="obligatorio">*</abbr> son obligatorios.</p>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate style="max-width:600px;">
+
+    <fieldset>
+      <legend>Datos de contacto</legend>
+
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="res-name">Nombre completo <span class="required-mark" aria-hidden="true">*</span></label>
+        <input id="res-name" type="text" formControlName="name" autocomplete="name"
+               aria-required="true"
+               [attr.aria-invalid]="isInvalid('name') || null" />
+        @if (isInvalid('name')) {
+          <span class="field-error" role="alert">{{ errorMsg('name') }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="res-email">Correo electrónico <span class="required-mark" aria-hidden="true">*</span></label>
+        <input id="res-email" type="email" formControlName="email" autocomplete="email"
+               aria-required="true"
+               [attr.aria-invalid]="isInvalid('email') || null" />
+        @if (isInvalid('email')) {
+          <span class="field-error" role="alert">{{ errorMsg('email') }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="res-phone">Teléfono <span class="required-mark" aria-hidden="true">*</span></label>
+        <input id="res-phone" type="tel" formControlName="phone" autocomplete="tel"
+               aria-required="true"
+               [attr.aria-invalid]="isInvalid('phone') || null" />
+        @if (isInvalid('phone')) {
+          <span class="field-error" role="alert">{{ errorMsg('phone') }}</span>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Detalles de la reserva</legend>
+
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="res-date">Fecha <span class="required-mark" aria-hidden="true">*</span></label>
+        <input id="res-date" type="date" formControlName="date"
+               aria-required="true"
+               [attr.aria-invalid]="isInvalid('date') || null"
+               aria-describedby="res-date-hint" />
+        <span class="form-hint" id="res-date-hint">Reservas con al menos 24 hs de anticipación.</span>
+        @if (isInvalid('date')) {
+          <span class="field-error" role="alert">{{ errorMsg('date') }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="res-time">Horario <span class="required-mark" aria-hidden="true">*</span></label>
+        <select id="res-time" formControlName="time"
+                aria-required="true"
+                [attr.aria-invalid]="isInvalid('time') || null">
+          <option value="">— Seleccioná un horario —</option>
+          <optgroup label="Almuerzo">
+            <option value="12:00">12:00</option>
+            <option value="12:30">12:30</option>
+            <option value="13:00">13:00</option>
+            <option value="13:30">13:30</option>
+          </optgroup>
+          <optgroup label="Cena">
+            <option value="20:00">20:00</option>
+            <option value="20:30">20:30</option>
+            <option value="21:00">21:00</option>
+            <option value="21:30">21:30</option>
+          </optgroup>
+        </select>
+        @if (isInvalid('time')) {
+          <span class="field-error" role="alert">{{ errorMsg('time') }}</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="res-guests">Número de personas <span class="required-mark" aria-hidden="true">*</span></label>
+        <input id="res-guests" type="number" formControlName="guests"
+               min="1" max="20"
+               aria-required="true"
+               [attr.aria-invalid]="isInvalid('guests') || null"
+               aria-describedby="res-guests-hint" />
+        <span class="form-hint" id="res-guests-hint">Para más de 20 personas, contactanos directamente.</span>
+        @if (isInvalid('guests')) {
+          <span class="field-error" role="alert">{{ errorMsg('guests') }}</span>
+        }
+      </div>
+    </fieldset>
+
+    <div class="form-group">
+      <label for="res-dietary">Restricciones alimentarias (opcional)</label>
+      <textarea id="res-dietary" formControlName="dietary" rows="3"
+                placeholder="Ej: un comensal es celíaco..."></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Confirmar reserva</button>
+    <a routerLink="/" class="btn btn-secondary" style="margin-left:1rem;">Cancelar</a>
+  </form>
+}

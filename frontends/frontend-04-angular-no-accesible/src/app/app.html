@@ -1,0 +1,23 @@
+<!-- Sin skip link -->
+<!-- Sin landmarks: div en vez de header/main/nav/footer -->
+
+<div style="background:#7fb3d3; padding:10px 20px; display:flex; align-items:center; justify-content:space-between;">
+  <a routerLink="/" style="color:#d0e8f5; font-size:18px; text-decoration:none;">El Sauce</a>
+
+  <!-- Nav con divs en vez de <a routerLink> — no accesible como links -->
+  <div style="display:flex; gap:5px;">
+    <div routerLink="/" style="color:#d0e8f5; font-size:12px; padding:4px 8px; cursor:pointer;">Inicio</div>
+    <div routerLink="/about" style="color:#d0e8f5; font-size:12px; padding:4px 8px; cursor:pointer;">Nosotros</div>
+    <div routerLink="/menu" style="color:#d0e8f5; font-size:12px; padding:4px 8px; cursor:pointer;">Menú</div>
+    <div routerLink="/reservation" style="color:#d0e8f5; font-size:12px; padding:4px 8px; cursor:pointer;">Reservas</div>
+    <div routerLink="/contact" style="color:#d0e8f5; font-size:12px; padding:4px 8px; cursor:pointer;">Contacto</div>
+  </div>
+</div>
+
+<div class="container">
+  <router-outlet />
+</div>
+
+<div style="background:#eee; color:#ccc; text-align:center; padding:15px; font-size:11px; margin-top:40px;">
+  <p>© 2024 El Sauce · <a routerLink="/contact" style="color:#bbb;">Contacto</a></p>
+</div>

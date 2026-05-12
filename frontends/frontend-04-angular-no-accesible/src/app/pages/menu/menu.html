@@ -1,0 +1,29 @@
+<h1>Nuestra carta</h1>
+
+<!-- [Visual total] Filtros sin aria-pressed, como <span> sin role -->
+<!-- [Cognitiva] Sin anuncio de cuántos resultados hay al filtrar -->
+<div style="margin:12px 0;">
+  <span class="filter-tag" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">Todos</span>
+  <span class="filter-tag" [class.active]="activeFilter === 'vegan'" (click)="setFilter('vegan')">🌱</span>
+  <span class="filter-tag" [class.active]="activeFilter === 'gf'" (click)="setFilter('gf')">🌾</span>
+</div>
+
+<!-- [Visual total] Items como divs — sin ul/li, sin semántica de lista -->
+@for (dish of filtered; track dish.id) {
+  <div class="menu-div-item" [id]="dish.id">
+    <div>
+      <div style="font-weight:bold; font-size:13px; color:#aaa;">{{ dish.name }}</div>
+      <div style="font-size:11px; color:#ccc; margin-top:3px;">{{ dish.desc }}</div>
+      @if (dish.tags.length) {
+        <div style="margin-top:4px; font-size:10px; color:#bbb;">
+          @for (tag of dish.tags; track tag) {
+            <!-- [Visual total] Tags sin texto alternativo — solo emoji -->
+            <span>{{ tag === 'vegan' ? '🌱' : '🌾' }}</span>
+          }
+        </div>
+      }
+    </div>
+    <!-- [Daltonismo] Precio solo en color verde — sin label textual -->
+    <div class="price-green">{{ dish.price }}</div>
+  </div>
+}

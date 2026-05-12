@@ -1,0 +1,101 @@
+<!-- FRONTEND-02 — INTENCIONALMENTE NO ACCESIBLE
+     Problemas en esta página:
+     [Visual total]   inputs sin <label> — solo placeholder
+     [Cognitiva]      campos requeridos sin indicación alguna
+     [Daltonismo]     errores indicados solo por borde rojo (sin texto)
+     [Visual total]   sin aria-invalid, sin aria-describedby
+     [Motora parcial] botón de envío con target muy pequeño (14px alto)
+     [Visual total]   sin feedback de éxito/error en el DOM (solo alert())
+     [Visual total]   sin aria-live region
+     [Visual total]   sin lang
+     [Visual total]   sin landmarks semánticos
+     [Visual total]   título de página duplicado respecto a index
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inicio</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+
+  <div class="site-header">
+    <a href="../index.html" class="site-logo">El Sauce</a>
+    <div class="main-nav">
+      <ul>
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="about.html">Nosotros</a></li>
+        <li><a href="menu.html">Menú</a></li>
+        <li><a href="reservation.html">Reservas</a></li>
+        <li><a href="contact.html">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <h1>Contacto</h1>
+    <p style="font-size: 12px; color: #ccc; margin-bottom: 20px;">Completá el formulario y te respondemos.</p>
+
+    <!-- Sin aria-live, sin rol, sin indicación de errores accesible -->
+    <div id="contact-form-status"></div>
+
+    <div class="form-wrap">
+      <form id="contact-form">
+
+        <!-- Input sin label — solo placeholder -->
+        <input type="text" name="name" placeholder="Nombre completo" />
+
+        <!-- Input sin label — placeholder desaparece al escribir -->
+        <input type="email" name="email" placeholder="Email" />
+
+        <!-- Input sin label -->
+        <input type="tel" name="phone" placeholder="Teléfono" />
+
+        <!-- Select sin label, sin opción vacía descriptiva -->
+        <select name="subject" style="margin-bottom: 10px; width: 100%; padding: 6px; border: 1px solid #ddd; color: #aaa; font-size: 13px;">
+          <option value="">Asunto</option>
+          <option value="reservation">Reservas</option>
+          <option value="event">Eventos</option>
+          <option value="feedback">Comentarios</option>
+          <option value="other">Otro</option>
+        </select>
+
+        <!-- Textarea sin label -->
+        <textarea name="message" rows="4" placeholder="Mensaje"></textarea>
+
+        <!-- Botón con target extremadamente pequeño -->
+        <div style="margin-top: 5px;">
+          <button type="submit" style="
+            padding: 2px 8px;
+            font-size: 11px;
+            border: 1px solid #ccc;
+            background: #ebebeb;
+            color: #aaa;
+            cursor: pointer;
+            border-radius: 2px;
+          ">Enviar</button>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="section-block" style="margin-top: 30px;">
+      <h2>Encontranos</h2>
+      <p style="font-size: 12px; color: #aaa; margin-top: 8px;">Av. Libertador 4200, Buenos Aires</p>
+      <p style="font-size: 12px; color: #aaa;">Tel: 11 5555-1234</p>
+      <!-- Link de email sin texto descriptivo -->
+      <p style="font-size: 12px;"><a href="mailto:hola@elsauce.com.ar" style="color:#bbb;">click aquí</a> para escribirnos.</p>
+    </div>
+
+  </div>
+
+  <div class="site-footer">
+    <p>© 2024 El Sauce · <a href="contact.html">Contacto</a></p>
+  </div>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

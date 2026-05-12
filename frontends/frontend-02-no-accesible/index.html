@@ -1,0 +1,139 @@
+<!-- FRONTEND-02 — INTENCIONALMENTE NO ACCESIBLE
+     Problemas en esta página:
+     [Visual total]      sin lang en <html>
+     [Visual total]      sin landmarks: div en vez de header/main/nav/footer
+     [Motora severa]     sin skip link
+     [Visual total]      jerarquía rota: h1 -> h4 directo
+     [Visual total]      imágenes sin alt o con alt genérico
+     [Fotosensibilidad]  banner parpadeante sin control
+     [Baja visión]       contraste insuficiente en texto
+     [Visual total]      links "click aquí" y "ver más" sin contexto
+     [Motora parcial]    targets de click pequeños
+     [Visual total]      tabla sin <th>, sin caption, sin scope
+     [Visual total]      sin <title> descriptivo único
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inicio</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <div class="site-header">
+    <a href="index.html" class="site-logo">El Sauce</a>
+
+    <div class="main-nav">
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="pages/about.html">Nosotros</a></li>
+        <li><a href="pages/menu.html">Menú</a></li>
+        <li><a href="pages/reservation.html">Reservas</a></li>
+        <li><a href="pages/contact.html">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <div class="flash-banner">
+      ¡OFERTA ESPECIAL! 20% de descuento todos los martes — ¡Reservá ya!
+    </div>
+
+    <div class="hero">
+      <h1>Bienvenidos a El Sauce</h1>
+      <p>Cocina mediterránea de autor, con ingredientes de estación.</p>
+      <a href="pages/reservation.html" class="btn">Click aquí</a>
+      &nbsp;
+      <a href="pages/menu.html" class="btn">Ver más</a>
+    </div>
+
+    <div class="section-block">
+      <h4>Platos destacados</h4>
+      <div class="cards-grid" style="margin-top: 12px;">
+
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600" />
+          <div class="card-body">
+            <h2>Risotto de porcini</h2>
+            <p>Arroz cremoso con hongos y trufa.</p>
+            <a href="pages/menu.html#risotto" class="btn btn-sm">Click aquí</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600" alt="image2" />
+          <div class="card-body">
+            <h2>Salmón a la plancha</h2>
+            <p>Salmón con espárragos y limón.</p>
+            <a href="pages/menu.html#salmon" class="btn btn-sm">Ver más</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600" alt="" />
+          <div class="card-body">
+            <h2>Tiramisú casero</h2>
+            <p>Mascarpone, café y cacao.</p>
+            <a href="pages/menu.html#tiramisu" class="btn btn-sm">Leer más</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h4>¿Por qué elegirnos?</h4>
+      <ul style="margin-top: 10px; padding-left: 20px; color: #aaa; font-size: 12px; line-height: 2;">
+        <li>Ingredientes frescos de productores locales</li>
+        <li>Menú de degustación de 5 pasos</li>
+        <li>Carta de vinos con más de 80 etiquetas</li>
+        <li>Espacio privado para eventos</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h4>Horarios</h4>
+
+      <!-- Tabla sin caption, sin th, sin scope -->
+      <table style="margin-top: 10px;">
+        <tr>
+          <td>Día</td>
+          <td>Almuerzo</td>
+          <td>Cena</td>
+        </tr>
+        <tr>
+          <td>Lunes a viernes</td>
+          <td>12:00 – 15:30</td>
+          <td>20:00 – 23:30</td>
+        </tr>
+        <tr>
+          <td>Sábados</td>
+          <td>12:00 – 16:00</td>
+          <td>20:00 – 00:00</td>
+        </tr>
+        <tr>
+          <td>Domingos</td>
+          <td>12:00 – 16:00</td>
+          <td>Cerrado</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- iframe sin title -->
+    <div class="section-block">
+      <h4>Cómo llegar</h4>
+      <iframe src="about:blank" style="margin-top:10px; background:#f0f0f0;"></iframe>
+    </div>
+
+  </div>
+
+  <div class="site-footer">
+    <p>© 2024 El Sauce · <a href="pages/contact.html">Contacto</a></p>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
