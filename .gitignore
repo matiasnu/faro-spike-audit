@@ -41,3 +41,8 @@ test-results/
 # Logs
 *.log
 logs/
+
+# Frontends (monorepo)
+frontends/**/node_modules/
+frontends/**/dist/
+frontends/**/.next/

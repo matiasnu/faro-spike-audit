@@ -1,0 +1,45 @@
+<nav class="breadcrumb" aria-label="Ruta de navegación">
+  <ol>
+    <li><a routerLink="/">Inicio</a></li>
+    <li><span aria-current="page">Menú</span></li>
+  </ol>
+</nav>
+
+<h1>Nuestra carta</h1>
+
+<div role="group" aria-label="Filtrar por restricción alimentaria" style="display:flex; gap:.5rem; flex-wrap:wrap; margin: 1.5rem 0;">
+  <button class="btn btn-secondary"
+          [attr.aria-pressed]="activeFilter() === 'all'"
+          (click)="setFilter('all')">Todos</button>
+  <button class="btn btn-secondary"
+          [attr.aria-pressed]="activeFilter() === 'vegan'"
+          (click)="setFilter('vegan')">Veganos</button>
+  <button class="btn btn-secondary"
+          [attr.aria-pressed]="activeFilter() === 'gf'"
+          (click)="setFilter('gf')">Sin gluten</button>
+</div>
+
+@for (section of filteredSections(); track section.headingId) {
+  <section [attr.aria-labelledby]="section.headingId" style="margin-bottom:2.5rem;">
+    <h2 [id]="section.headingId">{{ section.heading }}</h2>
+    <ul role="list" style="list-style:none; margin-top:1rem; display:grid; gap:.75rem;">
+      @for (dish of section.dishes; track dish.id) {
+        <li [id]="dish.id" style="display:flex; justify-content:space-between; align-items:baseline; gap:1rem; padding:.875rem 1rem; border:1px solid var(--color-border); border-radius:var(--radius); background:var(--color-bg-alt);">
+          <div>
+            <strong style="font-size:1.05rem;">{{ dish.name }}</strong>
+            <p style="font-size:.9rem; color:var(--color-text-muted); margin-top:.25rem;">{{ dish.desc }}</p>
+            @if (dish.tags.length) {
+              <p style="margin-top:.375rem; font-size:.8rem; color:var(--color-text-muted);">
+                @for (tag of dish.tags; track tag) {
+                  <span style="margin-right:.5rem;">{{ tagLabel(tag) }}</span>
+                }
+              </p>
+            }
+          </div>
+          <span style="font-weight:bold; white-space:nowrap; color:var(--color-primary);"
+                [attr.aria-label]="'Precio: ' + dish.price">{{ dish.price }}</span>
+        </li>
+      }
+    </ul>
+  </section>
+}

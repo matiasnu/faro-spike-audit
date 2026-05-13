@@ -1,0 +1,79 @@
+<nav class="breadcrumb" aria-label="Ruta de navegación">
+  <ol>
+    <li><a routerLink="/">Inicio</a></li>
+    <li><span aria-current="page">Contacto</span></li>
+  </ol>
+</nav>
+
+<h1>Contacto</h1>
+
+@if (submitted()) {
+  <div class="alert alert-success" role="status" aria-live="polite" tabindex="-1" id="form-success">
+    ¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.
+  </div>
+}
+
+@if (!submitted()) {
+  <p style="margin: .75rem 0 2rem;">Los campos marcados con <abbr title="obligatorio">*</abbr> son obligatorios.</p>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate style="max-width:600px;">
+
+    <div class="form-group">
+      <label for="contact-name">Nombre completo <span class="required-mark" aria-hidden="true">*</span></label>
+      <input id="contact-name" type="text" formControlName="name"
+             autocomplete="name"
+             [attr.aria-invalid]="isInvalid('name') || null"
+             [attr.aria-describedby]="isInvalid('name') ? 'contact-name-error' : null"
+             aria-required="true" />
+      @if (isInvalid('name')) {
+        <span class="field-error" id="contact-name-error" role="alert">{{ errorMsg('name') }}</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="contact-email">Correo electrónico <span class="required-mark" aria-hidden="true">*</span></label>
+      <input id="contact-email" type="email" formControlName="email"
+             autocomplete="email"
+             [attr.aria-invalid]="isInvalid('email') || null"
+             [attr.aria-describedby]="isInvalid('email') ? 'contact-email-error' : 'contact-email-hint'"
+             aria-required="true" />
+      <span class="form-hint" id="contact-email-hint">Ejemplo: nombre&#64;correo.com</span>
+      @if (isInvalid('email')) {
+        <span class="field-error" id="contact-email-error" role="alert">{{ errorMsg('email') }}</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="contact-phone">Teléfono (opcional)</label>
+      <input id="contact-phone" type="tel" formControlName="phone" autocomplete="tel" />
+    </div>
+
+    <div class="form-group">
+      <label for="contact-subject">Asunto <span class="required-mark" aria-hidden="true">*</span></label>
+      <select id="contact-subject" formControlName="subject"
+              [attr.aria-invalid]="isInvalid('subject') || null"
+              aria-required="true">
+        <option value="">— Seleccioná un asunto —</option>
+        <option value="reservation">Consulta sobre reservas</option>
+        <option value="event">Eventos y celebraciones</option>
+        <option value="feedback">Comentarios sobre tu visita</option>
+        <option value="other">Otro</option>
+      </select>
+      @if (isInvalid('subject')) {
+        <span class="field-error" role="alert">{{ errorMsg('subject') }}</span>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="contact-message">Mensaje <span class="required-mark" aria-hidden="true">*</span></label>
+      <textarea id="contact-message" formControlName="message" rows="5"
+                [attr.aria-invalid]="isInvalid('message') || null"
+                aria-required="true"></textarea>
+      @if (isInvalid('message')) {
+        <span class="field-error" role="alert">{{ errorMsg('message') }}</span>
+      }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+  </form>
+}
