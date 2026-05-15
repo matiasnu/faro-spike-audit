@@ -1,0 +1,57 @@
+<nav class="breadcrumb" aria-label="Ruta de navegación">
+  <ol>
+    <li><a routerLink="/">Inicio</a></li>
+    <li><span aria-current="page">Nosotros</span></li>
+  </ol>
+</nav>
+
+<h1>Nuestra historia</h1>
+
+<p style="margin-top: 1rem;">El Sauce nació en 1998 de la mano de la familia Giordano, que trajo consigo recetas, técnicas y el amor por la mesa compartida. Durante más de 25 años hemos sido parte de cenas familiares, aniversarios y reencuentros.</p>
+
+<section aria-labelledby="valores-heading" style="margin-top: 2rem;">
+  <h2 id="valores-heading">Nuestros valores</h2>
+  <div class="cards-grid">
+    <article class="card">
+      <div class="card-body">
+        <h3>Producto de estación</h3>
+        <p>El menú cambia con las estaciones. Respetamos ciclos y sabores naturales.</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-body">
+        <h3>Kilómetro cero</h3>
+        <p>La mayoría de nuestros ingredientes vienen de un radio de 150 km.</p>
+      </div>
+    </article>
+    <article class="card">
+      <div class="card-body">
+        <h3>Cero desperdicio</h3>
+        <p>Lo que no va al plato va al caldo. Lo que no va al caldo va al compost.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="equipo-heading">
+  <h2 id="equipo-heading">El equipo</h2>
+  <table style="margin-top: 1rem;">
+    <caption>Equipo principal de El Sauce</caption>
+    <thead>
+      <tr>
+        <th scope="col">Nombre</th>
+        <th scope="col">Rol</th>
+        <th scope="col">Desde</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (member of team; track member.name) {
+        <tr>
+          <td>{{ member.name }}</td>
+          <td>{{ member.role }}</td>
+          <td>{{ member.since }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>

@@ -1,0 +1,53 @@
+<h1>Contacto</h1>
+<p style="font-size:12px; color:#ccc; margin-bottom:15px;">Completá el formulario y te respondemos.</p>
+
+<!-- [Visual total] Sin aria-live, sin role="status" — el screen reader no lo lee -->
+<div id="form-status"></div>
+
+<form (ngSubmit)="onSubmit()" style="max-width:500px;">
+
+  <!-- [Visual total, Cognitiva] Inputs sin <label> — solo placeholder -->
+  <!-- [Visual total] Sin aria-invalid, sin aria-describedby -->
+  <input type="text" [(ngModel)]="name" name="name"
+         [class.error]="hasErrors && !name"
+         placeholder="Nombre completo" />
+
+  <input type="email" [(ngModel)]="email" name="email"
+         [class.error]="hasErrors && !email"
+         placeholder="Email" />
+
+  <input type="tel" name="phone" placeholder="Teléfono" />
+
+  <!-- [Visual total] Select sin label -->
+  <select name="subject" style="margin-bottom:10px;">
+    <option value="">Asunto</option>
+    <option value="reservation">Reservas</option>
+    <option value="event">Eventos</option>
+    <option value="other">Otro</option>
+  </select>
+
+  <textarea [(ngModel)]="message" name="message" rows="4"
+            [class.error]="hasErrors && !message"
+            placeholder="Mensaje"></textarea>
+
+  <!-- [Daltonismo, Cognitiva] Error solo por borde rojo — sin texto -->
+  @if (hasErrors) {
+    <!-- [Visual total] aria-hidden="true" oculta el error al screen reader -->
+    <p style="color:#e57373; font-size:11px; margin-bottom:8px;" aria-hidden="true">
+      Hay campos incompletos.
+    </p>
+  }
+
+  <!-- [Motora parcial] Botón con target de 14px de alto -->
+  <button type="submit" style="padding:2px 8px; font-size:11px; border:1px solid #ccc; background:#ebebeb; color:#aaa; cursor:pointer; border-radius:2px;">
+    Enviar
+  </button>
+
+</form>
+
+<div style="margin-top:25px;">
+  <h2 style="font-size:14px; color:#aaa;">Encontranos</h2>
+  <p style="font-size:12px; color:#aaa; margin-top:6px;">Av. Libertador 4200, Buenos Aires</p>
+  <!-- [Visual total] Link sin texto descriptivo -->
+  <p style="font-size:12px;"><a href="mailto:hola&#64;elsauce.com.ar" style="color:#bbb;">click aquí</a> para escribirnos.</p>
+</div>

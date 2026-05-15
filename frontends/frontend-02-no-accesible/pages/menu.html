@@ -1,0 +1,204 @@
+<!-- FRONTEND-02 — INTENCIONALMENTE NO ACCESIBLE
+     Problemas en esta página:
+     [Visual total]   items del menú como <div> — sin ul/li, sin semántica de lista
+     [Daltonismo]     precios solo en color verde — sin label "Precio:"
+     [Visual total]   filtros sin aria-pressed ni aria-selected
+     [Visual total]   tags de dieta sin texto alternativo (solo símbolo)
+     [Visual total]   sin landmarks
+     [Visual total]   sin lang
+     [Visual total]   jerarquía de encabezados rota
+     [Baja visión]    texto muy pequeño (11-12px fijos)
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inicio</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    .menu-section { margin-bottom: 25px; }
+    .menu-div-name { font-weight: bold; font-size: 13px; color: #aaa; }
+    .menu-div-desc { font-size: 11px; color: #ccc; margin-top: 3px; }
+    .menu-div-tags { margin-top: 4px; }
+    .menu-tag {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 99px;
+      background: #e0e0e0;
+      color: #aaa;
+      /* Solo símbolo — sin texto descriptivo para screen reader */
+    }
+    .tag-v { background: #c8e6c9; }
+    .tag-g { background: #ffe0b2; }
+  </style>
+</head>
+<body>
+
+  <div class="site-header">
+    <a href="../index.html" class="site-logo">El Sauce</a>
+    <div class="main-nav">
+      <ul>
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="about.html">Nosotros</a></li>
+        <li><a href="menu.html">Menú</a></li>
+        <li><a href="reservation.html">Reservas</a></li>
+        <li><a href="contact.html">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <h1>Nuestra carta</h1>
+
+    <!-- Filtros sin aria-pressed, sin rol, sin estado accesible -->
+    <div style="margin: 15px 0;">
+      <span class="filter-tag active" data-filter="all">Todos</span>
+      <span class="filter-tag" data-filter="vegan">🌱</span>
+      <span class="filter-tag" data-filter="gf">🌾</span>
+      <!-- Iconos sin texto alternativo — el usuario de screen reader no sabe qué filtran -->
+    </div>
+
+    <div class="menu-section">
+      <!-- h3 directamente sin h2 previo en esta sección -->
+      <h3>Entradas</h3>
+
+      <!-- Items como divs en vez de lista semántica -->
+      <div class="menu-div-item" data-tags="vegan">
+        <div>
+          <div class="menu-div-name">Bruschetta al pomodoro</div>
+          <div class="menu-div-desc">Pan de masa madre, tomate cherry, albahaca y aceite de oliva.</div>
+          <div class="menu-div-tags">
+            <span class="menu-tag tag-v">🌱</span>
+          </div>
+        </div>
+        <!-- Precio solo en color verde — sin "Precio:" ni aria-label -->
+        <div class="price-green">$2.800</div>
+      </div>
+
+      <div class="menu-div-item" data-tags="gf">
+        <div>
+          <div class="menu-div-name">Carpaccio de res</div>
+          <div class="menu-div-desc">Lomo crudo, rúcula, parmesano y alcaparras.</div>
+          <div class="menu-div-tags">
+            <span class="menu-tag tag-g">🌾</span>
+          </div>
+        </div>
+        <div class="price-green">$3.600</div>
+      </div>
+
+      <div class="menu-div-item" data-tags="vegan">
+        <div>
+          <div class="menu-div-name">Sopa de tomate y albahaca</div>
+          <div class="menu-div-desc">Tomates asados, albahaca y crutones.</div>
+          <div class="menu-div-tags">
+            <span class="menu-tag tag-v">🌱</span>
+          </div>
+        </div>
+        <div class="price-green">$2.400</div>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <h3>Platos principales</h3>
+
+      <div class="menu-div-item" data-tags="gf" id="risotto">
+        <div>
+          <div class="menu-div-name">Risotto de porcini</div>
+          <div class="menu-div-desc">Arroz arbóreo, hongos porcini, parmesano y trufa.</div>
+          <div class="menu-div-tags">
+            <span class="menu-tag tag-g">🌾</span>
+          </div>
+        </div>
+        <div class="price-green">$5.800</div>
+      </div>
+
+      <div class="menu-div-item" data-tags="gf" id="salmon">
+        <div>
+          <div class="menu-div-name">Salmón a la plancha</div>
+          <div class="menu-div-desc">Salmón atlántico con espárragos y salsa de limón.</div>
+          <div class="menu-div-tags">
+            <span class="menu-tag tag-g">🌾</span>
+          </div>
+        </div>
+        <div class="price-green">$6.500</div>
+      </div>
+
+      <div class="menu-div-item" data-tags="vegan">
+        <div>
+          <div class="menu-div-name">Pasta al pesto genovés</div>
+          <div class="menu-div-desc">Linguine artesanal con pesto de albahaca y piñones.</div>
+          <div class="menu-div-tags">
+            <span class="menu-tag tag-v">🌱</span>
+          </div>
+        </div>
+        <div class="price-green">$4.900</div>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <h3>Postres</h3>
+
+      <div class="menu-div-item" id="tiramisu">
+        <div>
+          <div class="menu-div-name">Tiramisú casero</div>
+          <div class="menu-div-desc">Bizcochos, mascarpone, café espresso y cacao.</div>
+        </div>
+        <div class="price-green">$2.600</div>
+      </div>
+
+      <div class="menu-div-item" data-tags="gf">
+        <div>
+          <div class="menu-div-name">Panna cotta de vainilla</div>
+          <div class="menu-div-desc">Crema cocida con vainilla y coulis de frutos rojos.</div>
+          <div class="menu-div-tags">
+            <span class="menu-tag tag-g">🌾</span>
+          </div>
+        </div>
+        <div class="price-green">$2.200</div>
+      </div>
+
+      <div class="menu-div-item" data-tags="vegan gf">
+        <div>
+          <div class="menu-div-name">Sorbete de limón y jengibre</div>
+          <div class="menu-div-desc">Sorbete artesanal con limón y jengibre fresco.</div>
+          <div class="menu-div-tags">
+            <span class="menu-tag tag-v">🌱</span>
+            <span class="menu-tag tag-g">🌾</span>
+          </div>
+        </div>
+        <div class="price-green">$1.800</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="site-footer">
+    <p>© 2024 El Sauce · <a href="contact.html">Contacto</a></p>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script>
+    // Filtros sin aria-pressed, sin anuncio de cambio
+    document.querySelectorAll('.filter-tag').forEach((tag) => {
+      tag.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tag').forEach((t) => t.classList.remove('active'));
+        tag.classList.add('active');
+
+        const filter = tag.dataset.filter;
+        document.querySelectorAll('.menu-div-item').forEach((item) => {
+          const tags = item.dataset.tags || '';
+          if (filter === 'all') {
+            item.style.display = '';
+          } else {
+            item.style.display = tags.includes(filter) ? '' : 'none';
+          }
+        });
+        // No anuncia resultados, no mueve foco, sin aria-live
+      });
+    });
+  </script>
+</body>
+</html>

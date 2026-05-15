@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nosotros — Restaurante El Sauce</title>
+  <meta name="description" content="Conocé la historia, el equipo y los valores detrás del Restaurante El Sauce." />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="site-logo" aria-label="El Sauce — volver al inicio">El Sauce</a>
+
+      <button
+        id="nav-toggle"
+        class="nav-toggle"
+        aria-controls="nav-menu"
+        aria-expanded="false"
+      >
+        ☰ Menú
+      </button>
+
+      <nav class="main-nav" aria-label="Navegación principal">
+        <ul id="nav-menu" role="list">
+          <li><a href="../index.html">Inicio</a></li>
+          <li><a href="about.html" aria-current="page">Nosotros</a></li>
+          <li><a href="menu.html">Menú</a></li>
+          <li><a href="reservation.html">Reservas</a></li>
+          <li><a href="contact.html">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <ol>
+        <li><a href="../index.html">Inicio</a></li>
+        <li><span aria-current="page">Nosotros</span></li>
+      </ol>
+    </nav>
+
+    <h1>Nuestra historia</h1>
+
+    <div class="about-grid" style="margin-top: 1.5rem;">
+      <div>
+        <p>El Sauce nació en 1998 de la mano de la familia Giordano, inmigrantes del sur de Italia que trajeron consigo recetas, técnicas y sobre todo el amor por la mesa compartida.</p>
+        <p style="margin-top: 1rem;">Durante más de 25 años hemos sido parte de cenas familiares, aniversarios, primeras citas y reencuentros de viejos amigos. Cada plato que sale de nuestra cocina lleva el mismo cuidado que el primero.</p>
+        <p style="margin-top: 1rem;">Trabajamos con más de doce productores de la región: verduleros, carniceros, pescaderos y viñateros que comparten nuestra filosofía de calidad y trazabilidad.</p>
+      </div>
+      <div>
+        <img
+          src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700"
+          alt="Interior del restaurante con mesas de madera, velas encendidas y luz cálida"
+          width="700"
+          height="500"
+          style="border-radius: 4px;"
+        />
+      </div>
+    </div>
+
+    <section aria-labelledby="valores-heading">
+      <h2 id="valores-heading">Nuestros valores</h2>
+      <div class="cards-grid" style="margin-top: 1.5rem;">
+
+        <article class="card">
+          <div class="card-body">
+            <h3>Producto de estación</h3>
+            <p>El menú cambia con las estaciones. Usamos lo que la tierra da en cada momento del año, respetando ciclos y sabores naturales.</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <h3>Kilómetro cero</h3>
+            <p>La mayoría de nuestros ingredientes vienen de un radio de 150 km. Menos transporte, más frescura, más impacto positivo en la economía local.</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-body">
+            <h3>Cero desperdicio</h3>
+            <p>Aprovechamos cada parte del ingrediente. Lo que no va al plato, va al caldo. Lo que no va al caldo, va al compost.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section aria-labelledby="equipo-heading">
+      <h2 id="equipo-heading">El equipo</h2>
+
+      <table style="margin-top: 1.5rem;">
+        <caption>Equipo principal de El Sauce</caption>
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Rol</th>
+            <th scope="col">Desde</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Marco Giordano</td>
+            <td>Chef ejecutivo y fundador</td>
+            <td>1998</td>
+          </tr>
+          <tr>
+            <td>Valentina Giordano</td>
+            <td>Directora de sala y socia</td>
+            <td>1998</td>
+          </tr>
+          <tr>
+            <td>Lucía Fernández</td>
+            <td>Sous chef</td>
+            <td>2015</td>
+          </tr>
+          <tr>
+            <td>Tomás Rivas</td>
+            <td>Sommelier</td>
+            <td>2019</td>
+          </tr>
+          <tr>
+            <td>Carla Medina</td>
+            <td>Pastelera</td>
+            <td>2021</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <p>© 2024 Restaurante El Sauce · Av. Libertador 4200, Buenos Aires ·
+      <a href="contact.html">Contacto</a>
+    </p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

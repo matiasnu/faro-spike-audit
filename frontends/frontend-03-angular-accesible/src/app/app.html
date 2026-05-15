@@ -1,0 +1,27 @@
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+<header class="site-header" role="banner">
+  <div class="header-inner">
+    <a routerLink="/" class="site-logo" aria-label="El Sauce — ir al inicio">El Sauce</a>
+
+    <nav class="main-nav" aria-label="Navegación principal">
+      <ul role="list">
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" ariaCurrentWhenActive="page">Inicio</a></li>
+        <li><a routerLink="/about" routerLinkActive="active" ariaCurrentWhenActive="page">Nosotros</a></li>
+        <li><a routerLink="/menu" routerLinkActive="active" ariaCurrentWhenActive="page">Menú</a></li>
+        <li><a routerLink="/reservation" routerLinkActive="active" ariaCurrentWhenActive="page">Reservas</a></li>
+        <li><a routerLink="/contact" routerLinkActive="active" ariaCurrentWhenActive="page">Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main-content" class="container">
+  <router-outlet />
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <p>© 2024 Restaurante El Sauce · Av. Libertador 4200, Buenos Aires ·
+    <a routerLink="/contact">Contacto</a>
+  </p>
+</footer>

@@ -1,0 +1,91 @@
+<h1>Reservá tu mesa</h1>
+
+<!-- [Cognitiva] Timeout silencioso de 30s implementado en el componente -->
+
+<!-- [Cognitiva] Formulario multi-paso SIN indicador de progreso -->
+<!-- [Visual total] Sin aria-live al cambiar de paso, sin movimiento de foco -->
+
+@if (currentStep() === 99) {
+  <p style="color:#ccc; font-size:12px;">La sesión expiró. Recargá la página.</p>
+}
+
+@if (currentStep() === 1) {
+  <div style="max-width:480px;">
+    <!-- Sin indicación de que es el paso 1 de 3 -->
+    <!-- [Visual total, Cognitiva] Inputs sin label — solo placeholder -->
+    <input type="text" name="name" placeholder="Tu nombre" />
+    <input type="email" name="email" placeholder="Tu email" />
+    <input type="tel" name="phone" placeholder="Tu teléfono" />
+    <div style="margin-top:8px;">
+      <button class="btn" (click)="nextStep()">Siguiente</button>
+    </div>
+  </div>
+}
+
+@if (currentStep() === 2) {
+  <div style="max-width:480px;">
+    <!-- Sin indicación de paso 2 de 3 -->
+    <p style="font-size:12px; color:#bbb; margin-bottom:6px;">Seleccioná una fecha (solo mouse):</p>
+
+    <!-- [Motora severa] Calendario custom con role="presentation" aria-hidden="true" -->
+    <!-- [Motora severa] Días sin tabindex ni role=button -->
+    <div role="presentation" aria-hidden="true" style="border:1px solid #ddd; padding:10px; font-size:12px; color:#aaa; margin-bottom:10px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px; color:#bbb;">
+        <span style="cursor:pointer;">◀</span>
+        <span>Mayo 2026</span>
+        <span style="cursor:pointer;">▶</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:4px; text-align:center;">
+        <div style="font-weight:bold;color:#ccc;">Lu</div>
+        <div style="font-weight:bold;color:#ccc;">Ma</div>
+        <div style="font-weight:bold;color:#ccc;">Mi</div>
+        <div style="font-weight:bold;color:#ccc;">Ju</div>
+        <div style="font-weight:bold;color:#ccc;">Vi</div>
+        <div style="font-weight:bold;color:#ccc;">Sa</div>
+        <div style="font-weight:bold;color:#ccc;">Do</div>
+        @for (d of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]; track d) {
+          <div (click)="selectedDate = d.toString()"
+               [style.background]="selectedDate === d.toString() ? '#7fb3d3' : ''"
+               [style.color]="selectedDate === d.toString() ? '#fff' : ''"
+               style="padding:4px; cursor:pointer; border-radius:2px;">{{ d }}</div>
+        }
+      </div>
+    </div>
+    <input type="hidden" [(ngModel)]="selectedDate" name="date" />
+
+    <!-- [Motora severa] Dropdown de hora solo con :hover — no con teclado -->
+    <p style="font-size:12px; color:#bbb; margin-bottom:4px;">Horario (pasá el mouse para ver opciones):</p>
+    <div class="hover-dropdown" style="margin-bottom:10px; width:100%;">
+      <div style="border:1px solid #ddd; padding:6px 8px; font-size:12px; color:#aaa; border-radius:2px; background:#fafafa;">
+        {{ selectedTime || 'Seleccioná un horario' }}
+      </div>
+      <div class="hover-dropdown-content" style="width:100%;">
+        <div (click)="selectTime('12:00')">12:00 — Almuerzo</div>
+        <div (click)="selectTime('12:30')">12:30 — Almuerzo</div>
+        <div (click)="selectTime('13:00')">13:00 — Almuerzo</div>
+        <div (click)="selectTime('20:00')">20:00 — Cena</div>
+        <div (click)="selectTime('20:30')">20:30 — Cena</div>
+        <div (click)="selectTime('21:00')">21:00 — Cena</div>
+      </div>
+    </div>
+    <input type="hidden" [(ngModel)]="selectedTime" name="time" />
+
+    <input type="number" name="guests" placeholder="Personas" />
+
+    <div style="margin-top:8px; display:flex; gap:8px;">
+      <button class="btn" (click)="prevStep()">Atrás</button>
+      <button class="btn" (click)="nextStep()">Siguiente</button>
+    </div>
+  </div>
+}
+
+@if (currentStep() === 3) {
+  <div style="max-width:480px;">
+    <!-- Sin indicación de paso 3 de 3 -->
+    <textarea name="dietary" rows="3" placeholder="Restricciones alimentarias (opcional)"></textarea>
+    <div style="margin-top:8px; display:flex; gap:8px;">
+      <button class="btn" (click)="prevStep()">Atrás</button>
+      <button class="btn" (click)="submit()">Confirmar reserva</button>
+    </div>
+  </div>
+}

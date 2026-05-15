@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contacto — Restaurante El Sauce</title>
+  <meta name="description" content="Ponete en contacto con el Restaurante El Sauce. Respondemos dentro de las 24 horas." />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="../index.html" class="site-logo" aria-label="El Sauce — volver al inicio">El Sauce</a>
+
+      <button
+        id="nav-toggle"
+        class="nav-toggle"
+        aria-controls="nav-menu"
+        aria-expanded="false"
+      >
+        ☰ Menú
+      </button>
+
+      <nav class="main-nav" aria-label="Navegación principal">
+        <ul id="nav-menu" role="list">
+          <li><a href="../index.html">Inicio</a></li>
+          <li><a href="about.html">Nosotros</a></li>
+          <li><a href="menu.html">Menú</a></li>
+          <li><a href="reservation.html">Reservas</a></li>
+          <li><a href="contact.html" aria-current="page">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <nav class="breadcrumb" aria-label="Ruta de navegación">
+      <ol>
+        <li><a href="../index.html">Inicio</a></li>
+        <li><span aria-current="page">Contacto</span></li>
+      </ol>
+    </nav>
+
+    <h1>Contacto</h1>
+    <p style="margin: 0.75rem 0 2rem;">Completá el formulario y te respondemos dentro de las 24 horas hábiles. Los campos marcados con <abbr title="obligatorio">*</abbr> son obligatorios.</p>
+
+    <div
+      id="contact-form-status"
+      role="status"
+      aria-live="polite"
+      tabindex="-1"
+      hidden
+    ></div>
+
+    <form id="contact-form" novalidate style="max-width: 600px;">
+
+      <div class="form-group">
+        <label for="contact-name">
+          Nombre completo
+          <span class="required-mark" aria-hidden="true">*</span>
+        </label>
+        <input
+          type="text"
+          id="contact-name"
+          name="name"
+          autocomplete="name"
+          data-required
+          aria-required="true"
+          aria-describedby="contact-name-error"
+        />
+        <span class="field-error" id="contact-name-error" role="alert"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="contact-email">
+          Correo electrónico
+          <span class="required-mark" aria-hidden="true">*</span>
+        </label>
+        <input
+          type="email"
+          id="contact-email"
+          name="email"
+          autocomplete="email"
+          data-required
+          aria-required="true"
+          aria-describedby="contact-email-error contact-email-hint"
+        />
+        <span class="form-hint" id="contact-email-hint">Ejemplo: nombre@correo.com</span>
+        <span class="field-error" id="contact-email-error" role="alert"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="contact-phone">Teléfono (opcional)</label>
+        <input
+          type="tel"
+          id="contact-phone"
+          name="phone"
+          autocomplete="tel"
+          aria-describedby="contact-phone-hint"
+        />
+        <span class="form-hint" id="contact-phone-hint">Código de área + número. Ejemplo: 11 5555-1234</span>
+      </div>
+
+      <div class="form-group">
+        <label for="contact-subject">
+          Asunto
+          <span class="required-mark" aria-hidden="true">*</span>
+        </label>
+        <select
+          id="contact-subject"
+          name="subject"
+          data-required
+          aria-required="true"
+          aria-describedby="contact-subject-error"
+        >
+          <option value="">— Seleccioná un asunto —</option>
+          <option value="reservation">Consulta sobre reservas</option>
+          <option value="event">Eventos y celebraciones</option>
+          <option value="feedback">Comentarios sobre tu visita</option>
+          <option value="press">Prensa y medios</option>
+          <option value="other">Otro</option>
+        </select>
+        <span class="field-error" id="contact-subject-error" role="alert"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="contact-message">
+          Mensaje
+          <span class="required-mark" aria-hidden="true">*</span>
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows="5"
+          data-required
+          aria-required="true"
+          aria-describedby="contact-message-error"
+        ></textarea>
+        <span class="field-error" id="contact-message-error" role="alert"></span>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+
+    </form>
+
+    <section aria-labelledby="info-heading" style="margin-top: 3rem;">
+      <h2 id="info-heading">También podés encontrarnos aquí</h2>
+      <dl style="margin-top: 1rem; display: grid; gap: 0.75rem;">
+        <div>
+          <dt style="font-weight: bold;">Dirección</dt>
+          <dd>Av. Libertador 4200, Palermo, Buenos Aires</dd>
+        </div>
+        <div>
+          <dt style="font-weight: bold;">Teléfono</dt>
+          <dd><a href="tel:+541155551234">11 5555-1234</a></dd>
+        </div>
+        <div>
+          <dt style="font-weight: bold;">Correo</dt>
+          <dd><a href="mailto:hola@elsauce.com.ar">hola@elsauce.com.ar</a></dd>
+        </div>
+        <div>
+          <dt style="font-weight: bold;">Redes</dt>
+          <dd>
+            <a href="#" aria-label="Instagram de El Sauce (abre en nueva pestaña)" target="_blank" rel="noopener">Instagram</a>
+            ·
+            <a href="#" aria-label="Facebook de El Sauce (abre en nueva pestaña)" target="_blank" rel="noopener">Facebook</a>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <p>© 2024 Restaurante El Sauce · Av. Libertador 4200, Buenos Aires ·
+      <a href="contact.html">Contacto</a>
+    </p>
+  </footer>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Restaurante El Sauce — Inicio</title>
+  <meta name="description" content="Bienvenido a El Sauce, restaurante familiar con cocina mediterránea en el corazón de la ciudad." />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo" aria-label="El Sauce — volver al inicio">El Sauce</a>
+
+      <button
+        id="nav-toggle"
+        class="nav-toggle"
+        aria-controls="nav-menu"
+        aria-expanded="false"
+      >
+        ☰ Menú
+      </button>
+
+      <nav class="main-nav" aria-label="Navegación principal">
+        <ul id="nav-menu" role="list">
+          <li><a href="index.html" aria-current="page">Inicio</a></li>
+          <li><a href="pages/about.html">Nosotros</a></li>
+          <li><a href="pages/menu.html">Menú</a></li>
+          <li><a href="pages/reservation.html">Reservas</a></li>
+          <li><a href="pages/contact.html">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="hero" aria-labelledby="hero-heading">
+      <h1 id="hero-heading">Bienvenidos a El Sauce</h1>
+      <p>Cocina mediterránea de autor, con ingredientes de estación y productores locales.</p>
+      <a href="pages/reservation.html" class="btn btn-primary">Reservar una mesa</a>
+      &nbsp;
+      <a href="pages/menu.html" class="btn btn-secondary">Ver nuestro menú</a>
+    </section>
+
+    <section aria-labelledby="destacados-heading">
+      <h2 id="destacados-heading">Platos destacados</h2>
+      <div class="cards-grid" style="margin-top: 1.5rem;">
+
+        <article class="card">
+          <img
+            src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600"
+            alt="Risotto de hongos porcini con parmesano y aceite de trufa"
+            width="600"
+            height="180"
+          />
+          <div class="card-body">
+            <h3>Risotto de porcini</h3>
+            <p>Arroz arbóreo cremoso con hongos porcini, parmesano y aceite de trufa blanca.</p>
+            <a href="pages/menu.html#risotto" class="btn btn-secondary">Ver receta</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <img
+            src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600"
+            alt="Salmón a la plancha con espárragos verdes y limón"
+            width="600"
+            height="180"
+          />
+          <div class="card-body">
+            <h3>Salmón a la plancha</h3>
+            <p>Filete de salmón atlántico con espárragos de temporada y salsa de limón y alcaparras.</p>
+            <a href="pages/menu.html#salmon" class="btn btn-secondary">Ver receta</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <img
+            src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600"
+            alt="Tiramisú casero con cacao en polvo y bizcochos de champán"
+            width="600"
+            height="180"
+          />
+          <div class="card-body">
+            <h3>Tiramisú casero</h3>
+            <p>La receta clásica con mascarpone, café espresso y cacao amargo de origen.</p>
+            <a href="pages/menu.html#tiramisu" class="btn btn-secondary">Ver receta</a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="services" aria-labelledby="servicios-heading">
+      <h2 id="servicios-heading">¿Por qué elegirnos?</h2>
+      <ul role="list">
+        <li>Ingredientes frescos de productores locales</li>
+        <li>Menú de degustación de 5 pasos los viernes y sábados</li>
+        <li>Carta de vinos con más de 80 etiquetas</li>
+        <li>Espacio privado para eventos y celebraciones</li>
+        <li>Opciones veganas y sin gluten en todos los platos</li>
+        <li>Estacionamiento gratuito para clientes</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="horarios-heading">
+      <h2 id="horarios-heading">Horarios de atención</h2>
+      <table>
+        <caption>Días y horarios del restaurante</caption>
+        <thead>
+          <tr>
+            <th scope="col">Día</th>
+            <th scope="col">Almuerzo</th>
+            <th scope="col">Cena</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Lunes a viernes</td>
+            <td>12:00 – 15:30</td>
+            <td>20:00 – 23:30</td>
+          </tr>
+          <tr>
+            <td>Sábados</td>
+            <td>12:00 – 16:00</td>
+            <td>20:00 – 00:00</td>
+          </tr>
+          <tr>
+            <td>Domingos y feriados</td>
+            <td>12:00 – 16:00</td>
+            <td>Cerrado</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <p>© 2024 Restaurante El Sauce · Av. Libertador 4200, Buenos Aires ·
+      <a href="pages/contact.html">Contacto</a>
+    </p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
