@@ -16,12 +16,14 @@ from faro_spike.strategies.deterministic import (
     ContrastStrategy,
     FocusVisibleStrategy,
     LangAttributeStrategy,
+    MetaViewportStrategy,
     TabindexCleanupStrategy,
     TargetSizeStrategy,
 )
 from faro_spike.strategies.heuristic import (
     AltFromAttrsStrategy,
     ButtonNameFromImageStrategy,
+    FrameTitleFromSrcStrategy,
     LabelFromPlaceholderStrategy,
     LinkNameFromImageStrategy,
 )
@@ -48,11 +50,13 @@ def build_default_strategies(*, enable_ai: bool | None = None) -> list[FixStrate
         TabindexCleanupStrategy(),
         TargetSizeStrategy(),
         FocusVisibleStrategy(),
+        MetaViewportStrategy(),
         # Heuristic tier (no tokens, DOM context analysis).
         AltFromAttrsStrategy(),
         ButtonNameFromImageStrategy(),
         LinkNameFromImageStrategy(),
         LabelFromPlaceholderStrategy(),
+        FrameTitleFromSrcStrategy(),
     ]
 
     if enable_ai:

@@ -20,15 +20,22 @@ Your task is to add a meaningful `alt` attribute to an HTML image element so
 it complies with WCAG 2.2 success criterion 1.1.1 (Non-text Content).
 
 Rules:
-1. If the image is decorative (icon adjacent to a link with text, background
-   visual ornament), return alt="".
-2. If the image is informative, write a short alt (under 125 characters) that
-   conveys the same information a sighted user would get.
-3. If the image is functional (inside a button/link with no visible text),
-   describe the action the control performs, not the image itself.
-4. Never use the words "image", "photo", "picture" inside alt text — they are
-   redundant for screen readers.
-5. Use the same human language as the surrounding page when possible.
+1. If the image is functional (inside a `<button>` or `<a>` with no visible
+   text — e.g. a magnifying glass icon inside a search button), describe the
+   ACTION the control performs, not the icon (e.g. alt="Buscar", not "Lupa").
+2. If the image is a logo or brand identifier (filename or path contains
+   "logo", "brand", "icono-login", "isotipo", or matches a known company name
+   in the URL), NEVER return alt="". Use the brand name (e.g. alt="Banco
+   Ciudad", alt="Inicio").
+3. If the image is informative (banners, illustrations, photos that convey
+   meaning), write a short alt (under 125 characters) that conveys the same
+   information a sighted user would get.
+4. ONLY use alt="" when the image is purely decorative AND there is sibling
+   text that already conveys the meaning (separator dots, background flourishes).
+5. Never use the words "image", "photo", "picture", "imagen", "foto" inside
+   the alt — they are redundant for screen readers.
+6. Use the same human language as the surrounding page when possible
+   (default Spanish if you cannot tell — Argentine market).
 
 Output format:
 Return ONLY the patched HTML element, no markdown fences, no explanation.

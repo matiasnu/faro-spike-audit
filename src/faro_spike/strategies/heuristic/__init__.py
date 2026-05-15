@@ -10,6 +10,9 @@ from faro_spike.strategies.heuristic.alt_from_attrs import AltFromAttrsStrategy
 from faro_spike.strategies.heuristic.button_name_from_image import (
     ButtonNameFromImageStrategy,
 )
+from faro_spike.strategies.heuristic.frame_title_from_src import (
+    FrameTitleFromSrcStrategy,
+)
 from faro_spike.strategies.heuristic.label_from_placeholder import (
     LabelFromPlaceholderStrategy,
 )
@@ -20,6 +23,7 @@ from faro_spike.strategies.heuristic.link_name_from_image import (
 __all__ = [
     "AltFromAttrsStrategy",
     "ButtonNameFromImageStrategy",
+    "FrameTitleFromSrcStrategy",
     "LabelFromPlaceholderStrategy",
     "LinkNameFromImageStrategy",
 ]

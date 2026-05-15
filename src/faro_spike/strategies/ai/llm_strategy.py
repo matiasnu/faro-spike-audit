@@ -177,6 +177,25 @@ class LLMRemediationStrategy:
 
     @staticmethod
     def _inject_color(html: str, color: str) -> str:
+        """Apply the new foreground color to the offending element.
+
+        Strategy:
+            1. If the element already has `style="..."`, prepend the color
+               declaration so it wins over any later rule.
+            2. If it has no style, splice `style="color: ..."` into the
+               opening tag itself (BEFORE the closing `>` of the first tag).
+
+        The previous version wrapped the whole snippet with a `<span>`,
+        which produced invalid HTML when used on `<label>`, `<a>`, etc.
+        """
         if 'style="' in html:
             return html.replace('style="', f'style="color: {color}; ', 1)
-        return html.replace("<", f'<span style="color: {color}">', 1) + "</span>"
+
+        opening_tag_end = html.find(">")
+        if opening_tag_end == -1:
+            return html  # cannot patch malformed input
+        return (
+            html[:opening_tag_end]
+            + f' style="color: {color}"'
+            + html[opening_tag_end:]
+        )

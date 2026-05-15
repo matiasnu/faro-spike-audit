@@ -8,6 +8,7 @@ algorithmically from the offending HTML/CSS, with zero ambiguity:
     - 2.4.3 tabindex cleanup (remove tabindex > 0)
     - 2.5.8 target size (apply CSS min-height/min-width)
     - 2.4.7 focus visible (default outline if missing)
+    - 1.4.4 meta-viewport (strip user-scalable=no)
 
 Each module exposes a single class implementing FixStrategy.
 """
@@ -15,6 +16,7 @@ Each module exposes a single class implementing FixStrategy.
 from faro_spike.strategies.deterministic.contrast import ContrastStrategy
 from faro_spike.strategies.deterministic.focus_visible import FocusVisibleStrategy
 from faro_spike.strategies.deterministic.lang_attribute import LangAttributeStrategy
+from faro_spike.strategies.deterministic.meta_viewport import MetaViewportStrategy
 from faro_spike.strategies.deterministic.tabindex_cleanup import TabindexCleanupStrategy
 from faro_spike.strategies.deterministic.target_size import TargetSizeStrategy
 
@@ -22,6 +24,7 @@ __all__ = [
     "ContrastStrategy",
     "FocusVisibleStrategy",
     "LangAttributeStrategy",
+    "MetaViewportStrategy",
     "TabindexCleanupStrategy",
     "TargetSizeStrategy",
 ]
